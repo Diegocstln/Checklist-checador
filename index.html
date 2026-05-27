@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluador de Checadores | NORCUL</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Proyecto: Modernizacion del Checador</p>
+        <h1>Checklist comparativo de checadores</h1>
+      </div>
+      <div class="summary-pill">
+        <span id="providerCount">0</span>
+        <small>proveedores evaluados</small>
+      </div>
+    </header>
+
+    <main>
+      <section class="controls" aria-label="Filtros de evaluacion">
+        <label>
+          Buscar
+          <input id="searchInput" type="search" placeholder="Requerimiento o proveedor" />
+        </label>
+        <label>
+          Area
+          <select id="areaFilter">
+            <option value="all">Todas</option>
+          </select>
+        </label>
+        <label>
+          Prioridad
+          <select id="priorityFilter">
+            <option value="all">Todas</option>
+            <option value="Indispensable">Indispensable</option>
+            <option value="Basico">Basico</option>
+            <option value="Ideal">Ideal</option>
+          </select>
+        </label>
+        <label>
+          Orden ranking
+          <select id="sortMode">
+            <option value="asc">Mas completos al final</option>
+            <option value="desc">Mas completos primero</option>
+            <option value="name">Nombre A-Z</option>
+          </select>
+        </label>
+        <button id="resetButton" type="button">Reiniciar evaluacion</button>
+      </section>
+
+      <section class="dashboard" aria-label="Resumen">
+        <article>
+          <span id="indispensableCount">0</span>
+          <p>Requerimientos indispensables</p>
+        </article>
+        <article>
+          <span id="bestProvider">-</span>
+          <p>Mayor cumplimiento actual</p>
+        </article>
+        <article>
+          <span id="disqualifiedCount">0</span>
+          <p>Descalificados por indispensables</p>
+        </article>
+      </section>
+
+      <section class="layout">
+        <aside class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Proveedores</h2>
+              <p>Selecciona un proveedor para revisar requisito por requisito.</p>
+            </div>
+          </div>
+          <div id="providerList" class="provider-list"></div>
+        </aside>
+
+        <section class="panel evaluator">
+          <div class="section-head">
+            <div>
+              <h2 id="activeProviderName">Proveedor</h2>
+              <p id="activeProviderMeta">Checklist basado en PROYECTO1_V4.pdf</p>
+            </div>
+            <div class="score-badge">
+              <strong id="activeScore">0%</strong>
+              <span id="activeStatus">Sin evaluar</span>
+            </div>
+          </div>
+          <div id="requirementList" class="requirement-list"></div>
+        </section>
+      </section>
+
+      <section class="panel matrix-panel">
+        <div class="section-head">
+          <div>
+            <h2>Ranking comparativo</h2>
+            <p>El puntaje pondera indispensables con mayor peso. Parcial y por validar no cuentan como cumplimiento total.</p>
+          </div>
+        </div>
+        <div id="ranking" class="ranking"></div>
+      </section>
+
+      <section class="panel matrix-panel">
+        <div class="section-head">
+          <div>
+            <h2>Matriz requisito por requisito</h2>
+            <p>Cada fila es un requerimiento del PDF y cada columna un checador investigado.</p>
+          </div>
+          <div class="legend">
+            <span class="dot ok"></span> Cumple
+            <span class="dot partial"></span> Parcial
+            <span class="dot validate"></span> Por validar
+            <span class="dot bad"></span> No cumple
+          </div>
+        </div>
+        <div class="matrix-wrap">
+          <table id="matrixTable" class="matrix-table"></table>
+        </div>
+      </section>
+
+      <section class="panel sources-panel">
+        <div class="section-head">
+          <div>
+            <h2>Fuentes y criterio</h2>
+            <p>La evaluacion usa evidencia publica del proveedor. Lo no publicado queda como por validar.</p>
+          </div>
+        </div>
+        <div id="sourceList" class="source-list"></div>
+      </section>
+    </main>
+
+    <template id="providerTemplate">
+      <button class="provider-card" type="button">
+        <span class="provider-title"></span>
+        <span class="provider-score"></span>
+        <span class="provider-status"></span>
+      </button>
+    </template>
+
+    <template id="requirementTemplate">
+      <article class="requirement-card">
+        <div class="check-row">
+          <select class="status-select" aria-label="Estado de cumplimiento"></select>
+          <span>
+            <strong class="req-name"></strong>
+            <small class="req-meta"></small>
+          </span>
+        </div>
+        <p class="req-desc"></p>
+        <p class="req-note"></p>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
