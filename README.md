@@ -1,6 +1,3 @@
-# Checklist checador
-
-Web local para evaluar proveedores de checador contra los requerimientos del documento `PROYECTO1_V4.pdf`.
 
 ## Que incluye
 
