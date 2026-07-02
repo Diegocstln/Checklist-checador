@@ -212,6 +212,53 @@ const statusNotes = {
   N: "La evidencia publica no muestra esta capacidad o contradice el requisito."
 };
 
+const executiveRecommendations = [
+  {
+    id: "buk",
+    place: 1,
+    label: "Primera opcion funcional",
+    why: "Es la alternativa mas completa y personalizable para Capital Humano. Conviene evaluarla primero porque el objetivo principal es que la herramienta se adapte a la operacion de CH, no solo elegir la mas barata.",
+    validate: "Confirmar compatibilidad con COMPAQ, alcance del piloto, carga inicial y formato de reportes para nomina."
+  },
+  {
+    id: "fiscoclic",
+    place: 2,
+    label: "Mejor costo-beneficio",
+    why: "Tiene buen alcance para asistencia, incidencias, geolocalizacion, reportes y operacion local, con un costo menor frente a las opciones mas completas.",
+    validate: "Validar cierre automatico 23:59, cierre remoto 18:00, costo de biometria/tablet, Mobile Tracking y WhatsApp Cloud."
+  },
+  {
+    id: "worky",
+    place: 3,
+    label: "Alternativa fuerte para campo",
+    why: "Es una opcion solida para personal operativo: geocercas, app, reconocimiento facial, turnos, incidencias, pre-nomina y reportes.",
+    validate: "Confirmar costos de capacitacion adicional, carga historica, compatibilidad con COMPAQ y si el piloto puede estar listo antes del 15 de julio."
+  },
+  {
+    id: "sesame",
+    place: 4,
+    label: "Respaldo viable",
+    why: "Incluye implementacion, soporte, Account Manager y capacitacion inicial. Puede servir como alternativa si las tres primeras no cierran condiciones.",
+    validate: "Validar reportes, reglas de asistencia y exportacion a COMPAQ."
+  },
+  {
+    id: "bizneo",
+    place: 5,
+    label: "Alternativa secundaria",
+    why: "Tiene precio competitivo y modulos de RH/tiempo, pero el onboarding pagado cambia el costo real del primer ano.",
+    validate: "Confirmar si onboarding incluye configuracion, carga de datos y capacitacion completa."
+  },
+  {
+    id: "factorial",
+    place: 6,
+    label: "No cerrar aun",
+    why: "Tiene funciones relevantes, pero falta cerrar cotizacion anual y el costo de implementacion ya aparece como adicional.",
+    validate: "Pedir cotizacion formal completa antes de considerarlo finalista."
+  }
+];
+
+const recommendedOrder = executiveRecommendations.map((item) => item.id);
+
 const requirementReasons = {
   "eventos-jornada": {
     C: "publica marcajes de entrada/salida con hora por empleado.",
@@ -621,12 +668,12 @@ const pilotRows = [
 ];
 
 const state = {
-  activeProviderId: providers[0].id,
+  activeProviderId: "buk",
   search: "",
   area: "all",
   priority: "all",
   status: "all",
-  sort: "asc",
+  sort: "recommended",
   costSearch: "",
   costImplementation: "all",
   costSort: "monthlyAsc",
@@ -684,6 +731,16 @@ function filteredRequirements() {
 function orderedProviders() {
   const text = state.search.trim().toLowerCase();
   let list = providers.filter((provider) => !text || provider.name.toLowerCase().includes(text) || filteredRequirements().length);
+  if (state.sort === "recommended") {
+    return list.sort((a, b) => {
+      const aIndex = recommendedOrder.indexOf(a.id);
+      const bIndex = recommendedOrder.indexOf(b.id);
+      const aRank = aIndex === -1 ? 999 : aIndex;
+      const bRank = bIndex === -1 ? 999 : bIndex;
+      if (aRank !== bRank) return aRank - bRank;
+      return b.name.localeCompare(a.name);
+    });
+  }
   if (state.sort === "name") return list.sort((a, b) => a.name.localeCompare(b.name));
   return list.sort((a, b) => {
     const diff = getScore(a.id).percent - getScore(b.id).percent;
@@ -784,18 +841,43 @@ function renderRanking() {
   const ranking = document.querySelector("#ranking");
   ranking.innerHTML = "";
   orderedProviders().forEach((provider, index) => {
+    const recommendation = executiveRecommendations.find((item) => item.id === provider.id);
     const score = getScore(provider.id);
     const row = document.createElement("article");
     row.className = "rank-row";
     const statusClass = score.missingCritical ? "status-bad" : score.percent >= 85 ? "status-ok" : "status-partial";
     row.innerHTML = `
-      <strong>${index + 1}. ${provider.name}</strong>
+      <strong>${state.sort === "recommended" && recommendation ? recommendation.place : index + 1}. ${provider.name}</strong>
       <div class="bar" aria-label="Cumplimiento ${score.percent}%"><span style="width:${score.percent}%"></span></div>
       <strong>${score.percent}%</strong>
-      <span class="${statusClass}">${score.status}</span>
+      <span class="${statusClass}">${recommendation ? recommendation.label : score.status}</span>
     `;
     ranking.append(row);
   });
+}
+
+function renderRecommendations() {
+  const list = document.querySelector("#recommendationList");
+  list.innerHTML = executiveRecommendations
+    .map((item) => {
+      const provider = providers.find((candidate) => candidate.id === item.id);
+      const score = getScore(item.id);
+      return `
+        <article class="recommendation-card">
+          <div class="recommendation-rank">${item.place}</div>
+          <div>
+            <div class="recommendation-title">
+              <h3>${provider.name}</h3>
+              <span>${item.label}</span>
+              <strong>${score.percent}%</strong>
+            </div>
+            <p><b>Por que va aqui:</b> ${item.why}</p>
+            <p><b>Antes de decidir:</b> ${item.validate}</p>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function renderMatrix() {
@@ -984,16 +1066,18 @@ function renderSources() {
 
 function renderSummary() {
   const scores = providers.map((provider) => ({ provider, ...getScore(provider.id) }));
-  const best = [...scores].sort((a, b) => b.percent - a.percent)[0];
+  const recommended = providers.find((provider) => provider.id === recommendedOrder[0]);
+  const average = Math.round(scores.reduce((sum, score) => sum + score.percent, 0) / scores.length);
   document.querySelector("#providerCount").textContent = providers.length;
   document.querySelector("#indispensableCount").textContent = requirements.filter((req) => req.priority === "Indispensable").length;
-  document.querySelector("#bestProvider").textContent = `${best.provider.name} (${best.percent}%)`;
-  document.querySelector("#disqualifiedCount").textContent = scores.filter((score) => score.missingCritical > 0).length;
+  document.querySelector("#bestProvider").textContent = recommended.name;
+  document.querySelector("#disqualifiedCount").textContent = `${average}%`;
 }
 
 function render() {
   renderProviders();
   renderRequirements();
+  renderRecommendations();
   renderRanking();
   renderCostTable();
   renderPendingTable();

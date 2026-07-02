@@ -298,6 +298,77 @@ main {
   margin-top: 18px;
 }
 
+.recommendation-panel {
+  margin-bottom: 18px;
+}
+
+.recommendation-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+.recommendation-card {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  min-height: 176px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 14px;
+}
+
+.recommendation-rank {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.recommendation-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.recommendation-title h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.recommendation-title span,
+.recommendation-title strong {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.recommendation-title span {
+  background: #fff3dd;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.recommendation-title strong {
+  background: #e8f5ed;
+  color: var(--ok);
+}
+
+.recommendation-card p {
+  margin-bottom: 7px;
+  color: #34413e;
+  font-size: 13px;
+}
+
 .table-controls {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(160px, 220px));
@@ -564,6 +635,7 @@ main {
   .dashboard,
   .layout,
   .requirement-list,
+  .recommendation-list,
   .source-list {
     grid-template-columns: 1fr;
   }

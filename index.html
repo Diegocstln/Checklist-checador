@@ -53,6 +53,7 @@
         <label>
           Orden ranking
           <select id="sortMode">
+            <option value="recommended">Recomendacion ejecutiva</option>
             <option value="asc">Mas completos al final</option>
             <option value="desc">Mas completos primero</option>
             <option value="name">Nombre A-Z</option>
@@ -68,12 +69,22 @@
         </article>
         <article>
           <span id="bestProvider">-</span>
-          <p>Mayor cumplimiento actual</p>
+          <p>Opcion recomendada</p>
         </article>
         <article>
           <span id="disqualifiedCount">0</span>
-          <p>Descalificados por indispensables</p>
+          <p>Promedio general</p>
         </article>
+      </section>
+
+      <section class="panel recommendation-panel" aria-label="Recomendacion ejecutiva">
+        <div class="section-head">
+          <div>
+            <h2>Recomendacion ejecutiva</h2>
+            <p>Orden propuesto considerando funcionalidad para CH, costo-beneficio, operacion en campo y pendientes criticos.</p>
+          </div>
+        </div>
+        <div id="recommendationList" class="recommendation-list"></div>
       </section>
 
       <section class="layout">
