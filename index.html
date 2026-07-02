@@ -41,6 +41,16 @@
           </select>
         </label>
         <label>
+          Cumplimiento
+          <select id="statusFilter">
+            <option value="all">Todos</option>
+            <option value="C">Cumple</option>
+            <option value="P">Parcial</option>
+            <option value="V">Por validar</option>
+            <option value="N">No cumple</option>
+          </select>
+        </label>
+        <label>
           Orden ranking
           <select id="sortMode">
             <option value="asc">Mas completos al final</option>
@@ -100,6 +110,106 @@
           </div>
         </div>
         <div id="ranking" class="ranking"></div>
+      </section>
+
+      <section class="panel matrix-panel">
+        <div class="section-head">
+          <div>
+            <h2>Comparativo de costos</h2>
+            <p>Tabla filtrable para comparar mensualidad, anualidad, implementacion, capacitacion y carga inicial.</p>
+          </div>
+        </div>
+        <div class="table-controls" aria-label="Filtros de costos">
+          <label>
+            Buscar
+            <input id="costSearch" type="search" placeholder="Proveedor, costo u observacion" />
+          </label>
+          <label>
+            Implementacion
+            <select id="costImplementationFilter">
+              <option value="all">Todas</option>
+              <option value="Incluida">Incluida</option>
+              <option value="Costo adicional">Costo adicional</option>
+              <option value="Por confirmar">Por confirmar</option>
+            </select>
+          </label>
+          <label>
+            Orden
+            <select id="costSort">
+              <option value="monthlyAsc">Mensual menor a mayor</option>
+              <option value="monthlyDesc">Mensual mayor a menor</option>
+              <option value="provider">Proveedor A-Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="matrix-wrap compact-wrap">
+          <table id="costTable" class="matrix-table detail-table"></table>
+        </div>
+      </section>
+
+      <section class="panel matrix-panel">
+        <div class="section-head">
+          <div>
+            <h2>Pendientes por confirmar</h2>
+            <p>Seguimiento de preguntas criticas para cerrar datos con proveedores antes del piloto.</p>
+          </div>
+        </div>
+        <div class="table-controls" aria-label="Filtros de pendientes">
+          <label>
+            Buscar
+            <input id="pendingSearch" type="search" placeholder="COMPAQ, piloto, biometria..." />
+          </label>
+          <label>
+            Proveedor
+            <select id="pendingProviderFilter">
+              <option value="all">Todos</option>
+            </select>
+          </label>
+          <label>
+            Prioridad
+            <select id="pendingPriorityFilter">
+              <option value="all">Todas</option>
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+            </select>
+          </label>
+          <label>
+            Estatus
+            <select id="pendingStatusFilter">
+              <option value="all">Todos</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Por validar en demo">Por validar en demo</option>
+              <option value="Confirmado">Confirmado</option>
+            </select>
+          </label>
+        </div>
+        <div class="matrix-wrap compact-wrap">
+          <table id="pendingTable" class="matrix-table detail-table"></table>
+        </div>
+      </section>
+
+      <section class="panel matrix-panel">
+        <div class="section-head">
+          <div>
+            <h2>Evaluacion del piloto</h2>
+            <p>Checklist filtrable para que CH e IT califiquen objetivamente la prueba del checador.</p>
+          </div>
+        </div>
+        <div class="table-controls" aria-label="Filtros de piloto">
+          <label>
+            Buscar
+            <input id="pilotSearch" type="search" placeholder="Campo, reportes, soporte..." />
+          </label>
+          <label>
+            Responsable
+            <select id="pilotOwnerFilter">
+              <option value="all">Todos</option>
+            </select>
+          </label>
+        </div>
+        <div class="matrix-wrap compact-wrap">
+          <table id="pilotTable" class="matrix-table detail-table"></table>
+        </div>
       </section>
 
       <section class="panel matrix-panel">
