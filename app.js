@@ -677,10 +677,6 @@ const state = {
   costSearch: "",
   costImplementation: "all",
   costSort: "monthlyAsc",
-  pendingSearch: "",
-  pendingProvider: "all",
-  pendingPriority: "all",
-  pendingStatus: "all",
   pilotSearch: "",
   pilotOwner: "all",
   evaluations: loadEvaluations()
@@ -756,14 +752,6 @@ function renderFilters() {
     option.value = area;
     option.textContent = area;
     areaFilter.append(option);
-  });
-
-  const pendingProviderFilter = document.querySelector("#pendingProviderFilter");
-  [...new Set(pendingRows.map((row) => row.provider))].sort().forEach((provider) => {
-    const option = document.createElement("option");
-    option.value = provider;
-    option.textContent = provider;
-    pendingProviderFilter.append(option);
   });
 
   const pilotOwnerFilter = document.querySelector("#pilotOwnerFilter");
@@ -970,50 +958,6 @@ function renderCostTable() {
   `;
 }
 
-function renderPendingTable() {
-  const table = document.querySelector("#pendingTable");
-  const text = state.pendingSearch.trim().toLowerCase();
-  const rows = pendingRows.filter((row) => {
-    const haystack = `${row.provider} ${row.topic} ${row.question} ${row.owner} ${row.status}`.toLowerCase();
-    const matchesText = !text || haystack.includes(text);
-    const matchesProvider = state.pendingProvider === "all" || row.provider === state.pendingProvider;
-    const matchesPriority = state.pendingPriority === "all" || row.priority === state.pendingPriority;
-    const matchesStatus = state.pendingStatus === "all" || row.status === state.pendingStatus;
-    return matchesText && matchesProvider && matchesPriority && matchesStatus;
-  });
-
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Proveedor</th>
-        <th>Tema</th>
-        <th>Pregunta a confirmar</th>
-        <th>Prioridad</th>
-        <th>Responsable</th>
-        <th>Fecha limite</th>
-        <th>Estatus</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${rows
-        .map(
-          (row) => `
-            <tr>
-              <td><strong>${row.provider}</strong></td>
-              <td>${row.topic}</td>
-              <td>${row.question}</td>
-              <td><span class="tag ${tagClass(row.priority)}">${row.priority}</span></td>
-              <td>${row.owner}</td>
-              <td>${row.due}</td>
-              <td><span class="tag ${tagClass(row.status)}">${row.status}</span></td>
-            </tr>
-          `
-        )
-        .join("")}
-    </tbody>
-  `;
-}
-
 function renderPilotTable() {
   const table = document.querySelector("#pilotTable");
   const text = state.pilotSearch.trim().toLowerCase();
@@ -1080,7 +1024,6 @@ function render() {
   renderRecommendations();
   renderRanking();
   renderCostTable();
-  renderPendingTable();
   renderPilotTable();
   renderMatrix();
   renderSummary();
@@ -1124,26 +1067,6 @@ document.querySelector("#costImplementationFilter").addEventListener("change", (
 document.querySelector("#costSort").addEventListener("change", (event) => {
   state.costSort = event.target.value;
   renderCostTable();
-});
-
-document.querySelector("#pendingSearch").addEventListener("input", (event) => {
-  state.pendingSearch = event.target.value;
-  renderPendingTable();
-});
-
-document.querySelector("#pendingProviderFilter").addEventListener("change", (event) => {
-  state.pendingProvider = event.target.value;
-  renderPendingTable();
-});
-
-document.querySelector("#pendingPriorityFilter").addEventListener("change", (event) => {
-  state.pendingPriority = event.target.value;
-  renderPendingTable();
-});
-
-document.querySelector("#pendingStatusFilter").addEventListener("change", (event) => {
-  state.pendingStatus = event.target.value;
-  renderPendingTable();
 });
 
 document.querySelector("#pilotSearch").addEventListener("input", (event) => {
